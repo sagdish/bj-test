@@ -1,0 +1,29 @@
+.form label {
+  display: block;
+}
+
+.form input {
+  width: 50%;
+  height: 40px;
+  padding: 5px;
+}
+
+.form textarea {
+  width: 50%;
+  height: 80px;
+}
+
+.form input[type='submit'] {
+  display: block;
+  width: 50%;
+  margin: 20px 0 30px;
+}
+
+@media (max-width: 600px) {
+  .form input {
+    width: 100%;
+  }
+  .form textarea {
+    width: 100%;
+  }
+}
