@@ -1,5 +1,5 @@
-import Head from 'next/head'
 import Layout from '../components/Layout'
+import Task from '../components/Task'
 import { API_URL } from '../config/index'
 
 export default function Home({data}) {
@@ -7,9 +7,14 @@ export default function Home({data}) {
     <Layout>
       <div>
         <h1>You're awesome!</h1>
-        <pre>
+
+        {data.map(task => (
+          <Task key={task.id} task={task} />
+        ))}
+
+        {/* <pre>
           <code>{JSON.stringify(data, null, 4)}</code>
-        </pre>
+        </pre> */}
       </div>
     </Layout>
   )
@@ -24,7 +29,7 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      data
+      data: data.message.tasks
     }
   }
 }
