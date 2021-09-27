@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import Layout from '../components/Layout'
 import { API_URL } from '../config/index'
 import styles from '../styles/Form.module.css'
 
@@ -10,6 +13,9 @@ export default function AddTask({visible, handle, updateState}) {
     email: '',
     text: '',
   })
+
+  // instantiate router to go back
+  const router = useRouter()
 
   const handleSubmit = async e => {
     e.preventDefault()
@@ -22,26 +28,25 @@ export default function AddTask({visible, handle, updateState}) {
     if (hasEmptyFields) {
       toast.error('Пожалуйста заполните все поля')
       return
-    }
-    // console.log(values)
-
-    const formData = new FormData()
-    let res;
-    if (values.username.length > 2 && values.email.includes('@') && values.text.length > 2) {
-      formData.append("username", values.username);
-      formData.append("email", values.email);
-      formData.append("text", values.text);
-
-      res = await fetch(`${API_URL('create')}`, {
-        method: 'POST',
-        body: formData
-      })
-    } else {
+    } else if (values.username.length < 1 && !values.email.includes('@') && values.text.length < 2) {
       toast.error('Пожалуйста заполните все поля или добавьте больше символов')
       return
     }
 
-    updateState(values)
+    // form
+    const formData = new FormData()
+    formData.append("username", values.username);
+    formData.append("email", values.email);
+    formData.append("text", values.text);
+
+    const res = await fetch(`${API_URL('create')}`, {
+      method: 'POST',
+      body: formData,
+      crossDomain: true
+    })
+
+    const data = await res.json();
+    console.log(data)
 
     setValues({
       username: '',
@@ -49,8 +54,13 @@ export default function AddTask({visible, handle, updateState}) {
       text: ''
     })
 
-    if (res.status === 'error') {
-      toast.error('Что-то пошло не так')
+    if (data.status === 'error') {
+      toast.error(JSON.stringify(data.message))
+    } else if (data.status === 'ok') {
+      toast.success('Задача добавлена')
+      router.back()
+    } else {
+      toast.error('unknown error')
     }
   }
 
@@ -60,7 +70,7 @@ export default function AddTask({visible, handle, updateState}) {
   }
 
   return (
-    <>{visible && <div style={{marginTop: '30px'}}>
+    <Layout>
       <h3>Добавить задачу</h3>
       <ToastContainer />
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -95,11 +105,8 @@ export default function AddTask({visible, handle, updateState}) {
             onChange={handleInputChange}
           />
         </div>
-
-
         <input type='submit' value='Add Todo' className='btn' />
       </form>
-    </div>}
-    </>
+    </Layout>
   )
 }

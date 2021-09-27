@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import Layout from '../components/Layout'
 import Task from '../components/Task'
-import AddTask from '../components/AddTask'
+import AddTask from './add'
 import { API_URL } from '../config/index'
 import { useRouter } from 'next/router'
 
@@ -14,32 +14,15 @@ export default function Home({data, totalCount, page}) {
 
   const router = useRouter()
 
-  const [tasks, setTasks] = useState(data)
-  console.log('tasks: ', tasks, 'data :', data)
-  console.log(tasks.length)
-  console.log('total count :', totalCount)
-
-
-  // do smth with this!
-  // that's better!
-  useEffect(() => {
-    setTasks(data)
-  }, [data])
-
-  const updateState = newTask => {
-    if (tasks.length < 3) {
-      setTasks(state => [...state, newTask])
-    } else {
-      setTasks(data)
-    }
-    toast.success('Задача добавлена')
-  }
-
   return (
     <Layout>
       <h1>Задачник</h1>
 
-      {tasks.map(task => (
+      <Link href='/add'>
+        <a className='btn'>Новая задача</a>
+      </Link>
+
+      {data.map(task => (
         <Task key={task.id} task={task} />
       ))}
 
@@ -54,17 +37,6 @@ export default function Home({data, totalCount, page}) {
           <a className='btn-secondary'>Next</a>
         </Link>
       )}
-
-      <br/>
-      <AddTask
-        visible={showForm}
-        handle={setShowForm}
-        updateState={updateState}
-      />
-      <div className='btn space'
-        onClick={() => setShowForm(!showForm)}>
-        {showForm ? 'Свернуть поля' : 'Новая задача'}
-      </div>
       
     </Layout>
   )
