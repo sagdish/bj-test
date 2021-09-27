@@ -57,8 +57,8 @@ export default function AddTask({visible, handle, updateState}) {
     if (data.status === 'error') {
       toast.error(JSON.stringify(data.message))
     } else if (data.status === 'ok') {
-      toast.success('Задача добавлена')
-      router.back()
+      toast.success('Задача добавлена! Идем назад к списку...')
+      setTimeout(() => router.back(), 1300)
     } else {
       toast.error('unknown error')
     }

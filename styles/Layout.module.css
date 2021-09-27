@@ -1,5 +1,25 @@
 .container {
-  margin: 60px auto;
+  margin: 30px auto 60px;
   max-width: 960px;
   padding: 0 30px;
 }
+.linkcontainer {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px auto;
+  max-width: 960px;
+  padding: 0 20px;
+  border: 1px solid red;
+}
+
+.linkcontainer a {
+  margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .linkcontainer {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
