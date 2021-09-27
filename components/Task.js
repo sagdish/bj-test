@@ -7,7 +7,7 @@ export default function Task({task}) {
 
       <div className={styles.img}>
         <Image src={task.image_path? task.image_path : '/todo.jpeg'} 
-          width={170} height={120}
+          width={90} height={70}
         />
       </div>
 
@@ -15,8 +15,8 @@ export default function Task({task}) {
         <span>
           {task.email}
         </span>
-        <h3>{task.username}</h3>
-        <h3>{task.text}</h3>
+        <p>{task.username}</p>
+        <h4>{task.text}</h4>
       </div>
 
 

@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { API_URL } from '../config/index'
 import styles from '../styles/Form.module.css'
 
-export default function AddTask({visible, handle}) {
+export default function AddTask({visible, handle, updateState}) {
   const [values, setValues] = useState({
     username: '',
     email: '',
@@ -25,8 +25,7 @@ export default function AddTask({visible, handle}) {
     }
     // console.log(values)
 
-    const formData = new FormData();
-
+    const formData = new FormData()
     let res;
     if (values.username.length > 2 && values.email.includes('@') && values.text.length > 2) {
       formData.append("username", values.username);
@@ -42,6 +41,8 @@ export default function AddTask({visible, handle}) {
       return
     }
 
+    updateState(values)
+
     setValues({
       username: '',
       email: '',
@@ -50,8 +51,6 @@ export default function AddTask({visible, handle}) {
 
     if (res.status === 'error') {
       toast.error('Что-то пошло не так')
-    } else {
-      toast.success('Задача добавлена')
     }
   }
 
@@ -61,7 +60,7 @@ export default function AddTask({visible, handle}) {
   }
 
   return (
-    <>{visible && <div>
+    <>{visible && <div style={{marginTop: '30px'}}>
       <h3>Добавить задачу</h3>
       <ToastContainer />
       <form onSubmit={handleSubmit} className={styles.form}>
