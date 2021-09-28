@@ -13,7 +13,9 @@ export default function Header() {
       <nav>
         <ul>
           <li>
-            <a className='btn-secondary'>Admin Login</a>
+            <Link href='/login'>
+              <a className='btn-secondary'>Admin Login</a>
+            </Link>
           </li>
         </ul>
       </nav>

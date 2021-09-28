@@ -12,7 +12,7 @@ export default function Home({ data, totalCount, page, sort_direction, sort_fiel
   const [showForm, setShowForm] = useState(false)
   const lastPage = Math.ceil(totalCount / 3)
 
-  // const sortDir = 
+  console.log('data', data)
   const setURL = (page=page, sort_direction=sort_direction, sort_field=sort_field) => {
     return `/?page=${page}&sort_direction=${sort_direction}&sort_field=${sort_field}`
   }
@@ -64,15 +64,9 @@ export default function Home({ data, totalCount, page, sort_direction, sort_fiel
   )
 }
 
-// `/v2?developer=zach&sort_field=${sort}&sort_direction=${direction}&page=${page}`
-// `/v2/${req}?developer=bob`
-
 export async function getServerSideProps({ query: {page=1, sort_direction='asc', sort_field='id'} }) {
-  console.log('direction:', sort_direction)
-  // console.log('reques', req)
 
   const res = await fetch(`${API_URL()}&page=${page}&sort_direction=${sort_direction}&sort_field=${sort_field}`)
-  // const res = await fetch(`${API_URL()}&page=${page}`)
   const data = await res.json()
 
   return {

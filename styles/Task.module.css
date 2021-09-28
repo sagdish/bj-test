@@ -5,7 +5,7 @@
   margin: 20px 0;
   padding: 13px;
   box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.1);
-  background-color: aliceblue;
+  background-color: #f4f4f4;
 }
 
 .img {
@@ -18,7 +18,7 @@
 }
 
 @media (max-width: 600px) {
-  .pet {
+  .task {
     flex-direction: column;
     text-align: center;
   }
