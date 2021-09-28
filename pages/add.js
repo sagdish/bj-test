@@ -45,8 +45,7 @@ export default function AddTask({visible, handle, updateState}) {
       crossDomain: true
     })
 
-    const data = await res.json();
-    console.log(data)
+    const data = await res.json()
 
     setValues({
       username: '',

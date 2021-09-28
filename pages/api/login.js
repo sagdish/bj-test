@@ -1,5 +1,7 @@
 import { API_URL } from "../../config"
 import FormData from 'form-data'
+import cookie from 'cookie'
+
 
 export default async (req, res) => {
   if (req.method === 'POST') {
@@ -17,13 +19,22 @@ export default async (req, res) => {
 
     const uxcandyRes = await fetch(`${API_URL('login/')}`, requestOptions)
     const data = await uxcandyRes.json()
-    // console.log(data.message.token)
 
-    if (uxcandyRes.ok) {
+    if (data.status === "ok") {
+      res.setHeader('Set-Cookie', cookie.serialize(
+        'token', data.message.token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV !== 'development',
+          maxAge: 60 * 60 * 24,
+          sameSite: 'strict',
+          path: '/'
+        }
+      ))
       res.status(200).json(data)
     } else {
-      res.json(data.message)
+      res.status(401).json(data)
     }
+
   } else {
     res.setHeader('Allow', ['POST'])
     res.status(405).json({message: 'only POST requests'})

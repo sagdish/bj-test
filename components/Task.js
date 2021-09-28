@@ -1,5 +1,8 @@
 import { useState } from 'react'
+import { FaEdit } from 'react-icons/fa'
+import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 import styles from '../styles/Task.module.css'
 
 export default function Task({task}) {
@@ -17,11 +20,11 @@ export default function Task({task}) {
 
   // }
 
-  
   const [curTask, setCurTask] = useState(task)
 
   const status = task.status
-
+  
+  // console.log('task ', task)
 
   return (
     <div className={styles.task}>
@@ -42,7 +45,14 @@ export default function Task({task}) {
         {(task.status === 11 || task.status === 1) && <p>{'Отредактирована Админом'}</p>} 
       </div>
 
-
+      <div>
+        <Link href={{
+          pathname: `/edit/${task.id}`, 
+          query: {id: task.id, text: task.text, status: task.status}
+        }}> 
+          <button className='btn' style={{opacity: '0.7'}}> <FaEdit /></button>
+        </Link>
+      </div>
     </div>
   )
 }
