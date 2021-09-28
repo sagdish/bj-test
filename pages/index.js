@@ -12,7 +12,6 @@ export default function Home({ data, totalCount, page, sort_direction, sort_fiel
   const [showForm, setShowForm] = useState(false)
   const lastPage = Math.ceil(totalCount / 3)
 
-  console.log('data', data)
   const setURL = (page=page, sort_direction=sort_direction, sort_field=sort_field) => {
     return `/?page=${page}&sort_direction=${sort_direction}&sort_field=${sort_field}`
   }

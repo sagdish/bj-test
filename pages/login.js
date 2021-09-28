@@ -1,18 +1,23 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { FaUser } from 'react-icons/fa'
 import Link from 'next/link'
+import AuthContext from '../context/AuthContext'
 import Layout from '../components/Layout'
 import styles from '../styles/LoginForm.module.css'
 
 export default function login() {
-  const [user, setUser] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+
+  const { login, error } = useContext(AuthContext)
 
   const handleSubmit = e => {
     e.preventDefault()
-    console.log({user, password})
+    login({username, password})
+    setUsername('')
+    setPassword('')
   }
 
   return (
@@ -25,8 +30,8 @@ export default function login() {
         <form onSubmit={handleSubmit}>
           <div>
             <label htmlFor='user'>Username</label>
-            <input type='text' id='user' value={user} 
-              onChange={e => setUser(e.target.value)}
+            <input type='text' id='user' value={username} 
+              onChange={e => setUsername(e.target.value)}
             />
           </div>
           <div>
