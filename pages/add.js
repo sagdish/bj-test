@@ -19,7 +19,6 @@ export default function AddTask({visible, handle, updateState}) {
 
   const handleSubmit = async e => {
     e.preventDefault()
-    // console.log(values)
 
     // Validation:
     const hasEmptyFields = Object.values(values).some(

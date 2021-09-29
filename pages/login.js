@@ -10,7 +10,6 @@ import styles from '../styles/LoginForm.module.css'
 export default function login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
   const { login, error } = useContext(AuthContext)
 
   useEffect(() => error && toast.error(error))

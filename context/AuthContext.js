@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router'
 import { useEffect, createContext, useState } from 'react'
-import { toast } from 'react-toastify'
 import { NEXT_URL, API_URL } from '../config/index'
 
 const AuthContext = createContext()
@@ -8,14 +7,12 @@ const AuthContext = createContext()
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [error, setError] = useState(null)
-
   const router = useRouter()
 
   useEffect(() => userLoggedIn(), [])
 
   // login
   const login = async ({username, password}) => {
-    // console.log({username, password})
     const res = await fetch(`${NEXT_URL}/api/login`, {
       method: 'POST',
       headers: {
@@ -26,7 +23,6 @@ export const AuthProvider = ({ children }) => {
         password
       })
     })
-
     const data = await res.json()
 
     if (res.ok) {
@@ -37,7 +33,6 @@ export const AuthProvider = ({ children }) => {
       setError(data.message.password)
       setError(null)
     }
-
   }
 
   // logout

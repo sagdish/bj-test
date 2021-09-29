@@ -1,15 +1,16 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ToastContainer, toast } from 'react-toastify'
+import { useRouter } from 'next/router'
 import 'react-toastify/dist/ReactToastify.css'
 import Layout from '../components/Layout'
 import Task from '../components/Task'
 import styles from '../styles/Layout.module.css'
 import { API_URL } from '../config/index'
-import { useRouter } from 'next/router'
+import { parseCookies } from '../config/helpers'
 
-export default function Home({ data, totalCount, page, sort_direction, sort_field }) {
-  const [showForm, setShowForm] = useState(false)
+
+export default function Home({ data, totalCount, page, sort_direction, sort_field, token }) {
   const lastPage = Math.ceil(totalCount / 3)
 
   const setURL = (page=page, sort_direction=sort_direction, sort_field=sort_field) => {
@@ -44,7 +45,7 @@ export default function Home({ data, totalCount, page, sort_direction, sort_fiel
       </div>
 
       {data.map(task => (
-        <Task key={task.id} task={task} />
+        <Task key={task.id} task={task} token={token} />
       ))}
 
       {page > 1 && (
@@ -63,8 +64,8 @@ export default function Home({ data, totalCount, page, sort_direction, sort_fiel
   )
 }
 
-export async function getServerSideProps({ query: {page=1, sort_direction='asc', sort_field='id'} }) {
-
+export async function getServerSideProps({ query: {page=1, sort_direction='asc', sort_field='id'}, req }) {
+  const {token} = parseCookies(req)
   const res = await fetch(`${API_URL()}&page=${page}&sort_direction=${sort_direction}&sort_field=${sort_field}`)
   const data = await res.json()
 
@@ -74,7 +75,8 @@ export async function getServerSideProps({ query: {page=1, sort_direction='asc',
       data: data.message.tasks,
       page: +page,
       sort_direction,
-      sort_field
+      sort_field,
+      token: token === undefined ? null : token
     }
   }
 }

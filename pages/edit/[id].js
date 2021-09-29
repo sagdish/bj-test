@@ -6,31 +6,47 @@ import { useRouter } from 'next/router'
 import Layout from '../../components/Layout'
 import { API_URL } from '../../config/index'
 import styles from '../../styles/FormEdit.module.css'
-import cookie from 'cookie'
+import { parseCookies } from '../../config/helpers'
 
 export default function EditTask({ text, token }) {
-  console.log(`${API_URL(`edit/${text.id}`)}`)
-  console.log(token)
-  
-  const [check, setCheck] = useState(text.status === '10' || text.status === '11')
   
   const [values, setValues] = useState({
-    status: text.status,
+    status: Number(text.status),
     text: text.text,
   })
+  
+  const [check, setCheck] = useState(values.status === 10 || values.status === 11)
   
   // instantiate router to go back
   const router = useRouter()
   
   const handleCheck = () => {
-    setCheck(!check)
+    setCheck((check) => !check)
+    statusChange()
   }
+  useEffect(() => {
+    statusChange()
+  }, [check])
   
-  console.log('check', check)
+  const statusChange = () => {
+     // conditional check for status
+    if (values.text === text.text && check === true) {
+      setValues(state => ({ ...state, status: 10}))
+    } else if (values.text !== text.text && check === true) {
+      setValues(state => ({ ...state, status: 11}))
+    } else if (values.text !== text.text && check === false) {
+      setValues(state => ({ ...state, status: 1}))
+    } else if (values.text === text.text && check === false) {
+      setValues(state => ({ ...state, status: 0}))
+    }
+  }
 
   const handleInputChange = e => {
-    const {name, value} = e.target
-    setValues({ ...values, [name]: value })
+    if (e && e.target.name) {
+      const {name, value} = e.target
+      setValues({ ...values, [name]: value })
+    }
+    statusChange()
   }
   
   const handleSubmit = async e => {
@@ -39,54 +55,28 @@ export default function EditTask({ text, token }) {
     // Validation:
     const hasEmptyFields = Object.values(values).some(
       field => field === ''
-      )
-      if (hasEmptyFields) {
-        toast.error('Пожалуйста заполните все поля')
-        return
-      } else if (values.text.length < 1) {
-        toast.error('Пожалуйста добавьте больше символов')
-        return
-      }
-      
-      /*
-      text - тестовое поле - текст задачи
-      status - числовое поле - текущее состояние задачи
-      0 - задача не выполнена
-      1 - задача не выполнена, отредактирована админом
-      10 - задача выполнена
-      11 - задача отредактирована админом и выполнена
-      */
-
-    // conditional check for status
-    if (values.text === text.text && check === true) {
-      setValues({ ...values, status: '10'})
-    } else if (values.text !== text.text && check === true) {
-      setValues({ ...values, status: '11'})
-    } else if (values.text !== text.text && check === false) {
-      setValues({ ...values, status: '1'})
-    } else {
-      setValues({ ...values, status: '0'})
+    )
+    if (hasEmptyFields) {
+      toast.error('Пожалуйста заполните все поля')
+      return
+    } else if (values.text.length < 1) {
+      toast.error('Пожалуйста добавьте больше символов')
+      return
     }
 
     // form
-    const formData = new FormData()
-    formData.append("text", values.text)
-    formData.append("status", values.status)
+    const formdata = new FormData()
+    formdata.set("text", values.text)
+    formdata.set("status", values.status)
+    formdata.set('token', token)
 
-    const myHeaders = new Headers()
-    myHeaders.append('Authorization', `Bearer ${token}`)
-
-    var requestOptions = {
+    const requestOptions = {
       method: 'POST',
-      headers: myHeaders,
-      redirect: 'follow',
-      body: formData,
-      mode: 'no-cors',
-      crossDomain: true
-    }
+      body: formdata,
+      redirect: 'follow'
+    };
   
     const res = await fetch(`${API_URL(`edit/${text.id}`)}`, requestOptions)
-
     const data = await res.json()
 
     if (data.status === 'error') {
@@ -132,18 +122,12 @@ export default function EditTask({ text, token }) {
 }
 
 export async function getServerSideProps({query, req}) {
-
-
-  function parseCookies(req) {
-    return cookie.parse(req ? req.headers.cookie || '' : '')
-  }
-
   const {token} = parseCookies(req)
 
   return {
     props: {
       text: query,
-      token
+      token: token === undefined ? null : token
     }
   }
 }
